@@ -1,24 +1,31 @@
-FROM php:8.2-cli
+# Usa una imagen base oficial de PHP con Apache
+FROM php:8.2-apache
 
-# Instala extensiones necesarias
+# Instala extensiones requeridas por Laravel y herramientas comunes
 RUN apt-get update && apt-get install -y \
-    git unzip libpq-dev libzip-dev zip \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    zip \
+    curl \
+    && docker-php-ext-install pdo pdo_pgsql pdo_mysql zip
 
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Establece directorio de trabajo
-WORKDIR /app
+# Copia los archivos del proyecto al contenedor
+COPY . /var/www/html
 
-# Copia todo el código
-COPY . .
+# Establece el directorio actual de trabajo
+WORKDIR /var/www/html
 
-# Instala dependencias de Laravel
-RUN composer install --no-dev --optimize-autoloader
+# Asigna permisos (muy importante para Laravel)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Puerto por defecto
-EXPOSE 10000
+# Habilita Apache Rewrite Module
+RUN a2enmod rewrite
 
-# Comando para iniciar Laravel
-CMD php artisan serve --host=0.0.0.0 --port=10000
+# Configura el VirtualHost
+COPY ./vhost.conf /etc/apache2/sites-available/000-default.conf
