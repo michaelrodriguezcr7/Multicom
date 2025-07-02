@@ -78,7 +78,7 @@ class LoginController extends Controller
             // 4. Preparar datos para el correo
             $nombre = $usuario->nom_usu;
             $correo = $usuario->cor_usu;
-            $link = url('/login');
+            $link = url('/');
 
             // 5. Usar el servicio para enviar el correo
             $correoService = new CorreoService();
