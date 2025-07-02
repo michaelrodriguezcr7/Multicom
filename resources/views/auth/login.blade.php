@@ -12,7 +12,7 @@
 
     <style>
         body {
-            background: url('{{ asset("img/fondologin.jpg") }}') no-repeat center center fixed;
+            background: url('{{ asset("img/fondoLogin.jpg") }}') no-repeat center center fixed;
             background-size: cover;
             font-family: Arial, sans-serif;
         }
