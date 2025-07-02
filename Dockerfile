@@ -19,18 +19,22 @@ COPY . /var/www/html
 # Establece el directorio de trabajo
 WORKDIR /var/www/html
 
-# Instala Composer
+# Instala Composer (desde imagen oficial)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Da permisos a Laravel
+# Da permisos necesarios
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
-# Ejecuta Composer
+# Instala dependencias de Laravel (sin paquetes de desarrollo)
 RUN composer install --no-dev --optimize-autoloader
 
-# Ejecuta migraciones automáticamente
-RUN php artisan migrate --force
+# Copia el script de inicio
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
-# Expone el puerto
+# Usa el script como comando por defecto
+CMD ["start.sh"]
+
+# Expone el puerto 80
 EXPOSE 80
