@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\CorreosController;
+use App\Http\Controllers\IngresoInventarioController;
+use App\Http\Controllers\ProductoController;
 
 // Ruta de login (solo para invitados)
 Route::middleware(['guest', 'throttle:10,1'])->group(function () {
@@ -31,4 +33,16 @@ Route::middleware('auth')->group(function () {
 
     // Cerrar sesión
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // ingreso de productos, vista inventario
+    Route::get('/ingreso-inventario', [IngresoInventarioController::class, 'index'])->name('ingreso.formulario');
+    Route::post('/ingreso-inventario', [IngresoInventarioController::class, 'store'])->name('ingreso.guardar');
+
+    // vista productos
+    Route::get('/inventario', [ProductoController::class, 'index'])->name('productos.inventario');
+
+    // busqueda de producto por codigo
+    Route::get('/producto/buscar/{codigo}', [ProductoController::class, 'buscar'])->name('producto.buscar');
+
+
 });

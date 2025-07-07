@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <title>@yield('title', 'Mi Aplicación')</title>
 
   <!-- Bootstrap y Bootstrap Icons desde CDN -->
@@ -79,7 +81,7 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#">Reportes</a></li>
             <li><a class="dropdown-item" href="{{ route('usuarios.index') }}">Usuarios</a></li>
-            <li><a class="dropdown-item" href="#">Ingreso de Mercancia</a></li>
+            <li><a class="dropdown-item" href="{{ route('productos.inventario') }}">Ingreso de Mercancia</a></li>
             <li><a class="dropdown-item" href="#">Ventas</a></li>
             <li><a class="dropdown-item" href="#">Créditos</a></li>
             <li><a class="dropdown-item" href="#">Gastos</a></li>
