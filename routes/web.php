@@ -38,9 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/ingreso-inventario', [IngresoInventarioController::class, 'index'])->name('ingreso.formulario');
     Route::post('/ingreso-inventario', [IngresoInventarioController::class, 'store'])->name('ingreso.guardar');
 
+
     // vista productos
     Route::get('/inventario', [ProductoController::class, 'index'])->name('productos.inventario');
-
     // busqueda de producto por codigo
     Route::get('/producto/buscar/{codigo}', [ProductoController::class, 'buscar'])->name('producto.buscar');
 

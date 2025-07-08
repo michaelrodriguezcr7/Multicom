@@ -42,6 +42,17 @@
                         </div>
                     </div>
 
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="porcentaje_ganancia" class="form-label">Porcentaje de Ganancia (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="porcentaje_ganancia" name="porcentaje_ganancia" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="valor_venta" class="form-label">Valor de Venta (calculado)</label>
+                            <input type="number" step="0.01" class="form-control" id="valor_venta" name="valor_venta" readonly>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         <label for="observaciones" class="form-label">Observaciones</label>
                         <textarea class="form-control" id="observaciones" name="observaciones" rows="2"></textarea>

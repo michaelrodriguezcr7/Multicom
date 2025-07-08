@@ -32,6 +32,8 @@
                         <th>Cantidad Disponible</th>
                         <th>Valor Unitario</th>
                         <th>Proveedor Actual</th>
+                        <th>% Ganancia</th>
+                        <th>Valor de Venta</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,10 +45,12 @@
                             <td>{{ $prod->cantidad_total }}</td>
                             <td>${{ number_format($prod->valor_unitario, 0, ',', '.') }}</td>
                             <td>{{ $prod->proveedor_actual }}</td>
+                            <td>{{ $prod->porcentaje_ganancia }}%</td>
+                            <td>${{ number_format($prod->valor_venta, 0, ',', '.') }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">No hay productos registrados.</td>
+                            <td colspan="8" class="text-center text-muted">No hay productos registrados.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -69,12 +73,13 @@
 
         const campoCodigo = document.getElementById('codigo');
 
+        // 🟢 Abrir modal y limpiar campos
         btnAbrir.addEventListener('click', function () {
-            // Limpiar campos visibles, sin borrar el token CSRF
             modalElement.querySelectorAll('input:not([type=hidden]), textarea').forEach(el => el.value = '');
             modalIngreso.show();
         });
 
+        // 🔎 Buscar producto al salir del campo código
         campoCodigo.addEventListener('blur', function () {
             const codigo = campoCodigo.value.trim();
             if (codigo === '') return;
@@ -87,14 +92,30 @@
                         document.getElementById('categoria').value = data.categoria;
                         document.getElementById('proveedor').value = data.proveedor;
                         document.getElementById('valor_unitario').value = data.valor_unitario;
+                        document.getElementById('porcentaje_ganancia').value = data.porcentaje_ganancia;
+
+                        calcularValorVenta(); // 🧠 Calcula automáticamente el valor de venta
                     } else {
-                        ['nombre', 'categoria', 'proveedor', 'valor_unitario'].forEach(id => {
+                        ['nombre', 'categoria', 'proveedor', 'valor_unitario', 'porcentaje_ganancia', 'valor_venta'].forEach(id => {
                             document.getElementById(id).value = '';
                         });
                     }
                 })
                 .catch(err => console.error('Error al buscar producto:', err));
         });
+
+        // 🧠 Función para calcular valor de venta
+        function calcularValorVenta() {
+            const valorUnitario = parseFloat(document.getElementById('valor_unitario').value) || 0;
+            const porcentaje = parseFloat(document.getElementById('porcentaje_ganancia').value) || 0;
+
+            const valorVenta = valorUnitario * (1 + porcentaje / 100);
+            document.getElementById('valor_venta').value = valorVenta.toFixed(2);
+        }
+
+        // 🎯 Calcula automáticamente cuando el usuario cambia los valores manualmente
+        document.getElementById('valor_unitario').addEventListener('input', calcularValorVenta);
+        document.getElementById('porcentaje_ganancia').addEventListener('input', calcularValorVenta);
     });
 </script>
 @endsection
