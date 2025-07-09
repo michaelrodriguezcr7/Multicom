@@ -81,7 +81,7 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#">Reportes</a></li>
             <li><a class="dropdown-item" href="{{ route('usuarios.index') }}">Usuarios</a></li>
-            <li><a class="dropdown-item" href="{{ route('productos.inventario') }}">Ingreso de Mercancia</a></li>
+            <li><a class="dropdown-item" href="{{ route('productos.index') }}">Ingreso de Mercancia</a></li>
             <li><a class="dropdown-item" href="#">Ventas</a></li>
             <li><a class="dropdown-item" href="#">Créditos</a></li>
             <li><a class="dropdown-item" href="#">Gastos</a></li>

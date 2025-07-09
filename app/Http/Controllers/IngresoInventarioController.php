@@ -72,7 +72,7 @@ class IngresoInventarioController extends Controller
 
             DB::commit();
 
-            return redirect()->route('productos.inventario')->with('mensaje', 'Producto ingresado correctamente');
+            return redirect()->route('productos.index')->with('mensaje', 'Producto ingresado correctamente');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Error al registrar ingreso: ' . $e->getMessage());
