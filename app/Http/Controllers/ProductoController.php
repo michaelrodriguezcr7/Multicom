@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Producto;
+use App\Models\IngresoInventario;
 
 class ProductoController extends Controller
 {
@@ -35,7 +36,18 @@ class ProductoController extends Controller
         $producto->proveedor_actual = $request->proveedor_actual;
         $producto->valor_unitario = $request->valor_unitario;
         $producto->porcentaje_ganancia = $request->porcentaje_ganancia;
-        $producto->save(); // el valor_venta se calcula automáticamente si lo tienes con mutador o evento
+        $producto->save();
+
+        // 🔁 Actualizar el último ingreso en la tabla ingreso_inventario
+        $ultimoIngreso = IngresoInventario::where('producto_id', $producto->id)
+                            ->orderBy('created_at', 'desc')
+                            ->first();
+
+        if ($ultimoIngreso) {
+        $ultimoIngreso->valor_unitario = $producto->valor_unitario;
+        $ultimoIngreso->proveedor = $producto->proveedor_actual;
+        $ultimoIngreso->save();
+        }
 
         return redirect()->route('productos.index')->with('mensaje', '✅ Producto actualizado correctamente.');
     }
