@@ -17,6 +17,7 @@ class IngresoInventario extends Model
         'proveedor',
         'fecha_ingreso',
         'observaciones',
+        'lote',
     ];
 
     public function producto()

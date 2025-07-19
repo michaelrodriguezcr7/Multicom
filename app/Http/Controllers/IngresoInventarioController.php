@@ -60,6 +60,10 @@ class IngresoInventarioController extends Controller
                 $producto->save();
             }
 
+            // 📝 Generar el lote automáticamente
+            $ultimoId = IngresoInventario::max('id') ?? 0;
+            $lote = 'Lote-' . str_pad($ultimoId + 1, 4, '0', STR_PAD_LEFT);
+            
             // 📝 Registrar ingreso en el inventario
             IngresoInventario::create([
                 'producto_id' => $producto->id,
@@ -69,6 +73,7 @@ class IngresoInventarioController extends Controller
                 'proveedor' => $request->proveedor,
                 'fecha_ingreso' => now(),
                 'observaciones' => $request->observaciones,
+                'lote' => $lote,
             ]);
 
             DB::commit();

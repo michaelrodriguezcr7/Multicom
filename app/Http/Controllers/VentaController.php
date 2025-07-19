@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\DB;
 
 class VentaController extends Controller
 {
+
+    public function index()
+    {
+        $ventas = Venta::with('usuario')->get();
+        return view('ventas.eliminar', compact('ventas'));
+    }
+
+
     public function create()
     {
         $productos = Producto::all();
@@ -38,15 +46,7 @@ class VentaController extends Controller
                 $cantidad_a_vender = $item['cantidad'];
                 $precio_unitario = $item['precio'];
 
-                // 4. Guardar el detalle de la venta
-                DetalleVenta::create([
-                    'venta_id' => $venta->id,
-                    'producto_id' => $producto_id,
-                    'cantidad' => $cantidad_a_vender,
-                    'precio_unitario' => $precio_unitario,
-                    'subtotal' => $precio_unitario * $cantidad_a_vender,
-                ]);
-
+                
                 // 5. Descontar del inventario (FIFO)
                 $ingresos = IngresoInventario::where('producto_id', $producto_id)
                     ->where('cantidad_disponible', '>', 0)
@@ -56,23 +56,40 @@ class VentaController extends Controller
                 foreach ($ingresos as $ingreso) {
                     if ($cantidad_a_vender <= 0) break;
 
-                    if ($ingreso->cantidad_disponible >= $cantidad_a_vender) {
-                        $ingreso->cantidad_disponible -= $cantidad_a_vender;
-                        $ingreso->save();
-                        $cantidad_a_vender = 0;
-                    } else {
-                        $cantidad_a_vender -= $ingreso->cantidad_disponible;
-                        $ingreso->cantidad_disponible = 0;
-                        $ingreso->save();
-                    }
+                    // Calculamos cuánto se puede vender de este lote
+                    $cantidad_a_vender_de_este_lote = min($ingreso->cantidad_disponible, $cantidad_a_vender);
+
+                    // Actualizamos el inventario
+                    $ingreso->cantidad_disponible -= $cantidad_a_vender_de_este_lote;
+                    $ingreso->save();
+
+                    // Restamos del total que queda por vender
+                    $cantidad_a_vender -= $cantidad_a_vender_de_este_lote;
+
+                    // Guardamos el detalle de la venta por lote
+                    DetalleVenta::create([
+                        'venta_id' => $venta->id,
+                        'producto_id' => $producto_id,
+                        'cantidad' => $cantidad_a_vender_de_este_lote,
+                        'precio_unitario' => $precio_unitario,
+                        'subtotal' => $precio_unitario * $cantidad_a_vender_de_este_lote,
+                        'lote' => $ingreso->lote,
+                    ]);
                 }
+
+
+                                // 6. Actualizar la cantidad total en la tabla productos
+                $totalDisponible = IngresoInventario::where('producto_id', $producto_id)->sum('cantidad_disponible');
+
+                Producto::where('id', $producto_id)->update([
+                    'cantidad_total' => $totalDisponible,
+                ]);
 
                 // Validación: si no alcanzó el inventario
                 if ($cantidad_a_vender > 0) {
+                     $producto = Producto::find($producto_id);
                     DB::rollBack();
-                    return response()->json([
-                        'error' => 'Inventario insuficiente para el producto ID ' . $producto_id
-                    ], 400);
+                    return redirect()->route('ventas.create')->with('mensaje', 'No hay más unidades disponibles del producto: ' . $producto->nombre);
                 }
             }
 
@@ -88,6 +105,8 @@ class VentaController extends Controller
             ], 500);
         }
     }
+
+
     public function buscarv(Request $request)
     {
         $query = $request->input('query');
@@ -102,6 +121,49 @@ class VentaController extends Controller
         }
 
         return response()->json($productos);
+    }
+
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $venta = Venta::with('detalles')->findOrFail($id);
+
+            foreach ($venta->detalles as $detalle) {
+                // Buscar el lote específico del que se descontó la cantidad
+                $ingreso = IngresoInventario::where('producto_id', $detalle->producto_id)
+                            ->where('lote', $detalle->lote)
+                            ->first();
+
+                if ($ingreso) {
+                    // Devolver la cantidad al inventario
+                    $ingreso->cantidad_disponible += $detalle->cantidad;
+                    $ingreso->save();
+                }
+
+                // 🔄 Actualizar la cantidad_total en productos
+                $cantidad_total = IngresoInventario::where('producto_id', $detalle->producto_id)->sum('cantidad_disponible');
+
+                Producto::where('id', $detalle->producto_id)->update([
+                    'cantidad_total' => $cantidad_total
+                ]);
+            }
+
+            // Eliminar los detalles de la venta
+            $venta->detalles()->delete();
+
+            // Eliminar la venta
+            $venta->delete();
+
+            DB::commit();
+
+            return redirect()->route('ventas.eliminar')->with('mensaje', 'venta eliminada correctamente');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al eliminar la venta: ' . $e->getMessage());
+        }
     }
 
 

@@ -31,7 +31,8 @@
 
                 <!-- Tabla carrito -->
                 <h4>Carrito de Compras</h4>
-                <table class="table table-bordered" id="tablaCarrito">
+                <div class="table-responsive">
+                     <table class="table table-bordered" id="tablaCarrito">
                     <thead class="table-light">
                         <tr>
                             <th>Producto</th>
@@ -44,7 +45,10 @@
                     <tbody>
                         <!-- Dinámico con JS -->
                     </tbody>
-                </table>
+                    </table>
+
+                </div>
+               
 
                 <!-- Nombre del vendedor -->
                 <div class="mb-3">

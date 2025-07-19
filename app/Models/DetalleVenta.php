@@ -16,6 +16,7 @@ class DetalleVenta extends Model
         'cantidad',
         'precio_unitario',
         'subtotal',
+        'lote',
     ];
 
     /**

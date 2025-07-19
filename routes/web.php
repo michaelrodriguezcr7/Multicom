@@ -53,7 +53,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/ventas', [VentaController::class, 'store'])->name('ventas.store');
     // buscar produto
     Route::get('/productosx/buscar', [VentaController::class, 'buscarv'])->name('productosv.buscar');
-    
+
+
+
+
+    //pendientes
+
+    //vista de eliminar
+    Route::get('/ventas/eliminar', [VentaController::class, 'index'])->name('ventas.eliminar');
+
+    //metodo de eliminar
+    Route::delete('/ventas/{venta}', [VentaController::class, 'destroy'])->name('ventas.destroy');
 
 
 });
