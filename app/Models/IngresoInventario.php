@@ -12,6 +12,7 @@ class IngresoInventario extends Model
     protected $fillable = [
         'producto_id',
         'cantidad_ingresada',
+        'cantidad_disponible',
         'valor_unitario',
         'proveedor',
         'fecha_ingreso',

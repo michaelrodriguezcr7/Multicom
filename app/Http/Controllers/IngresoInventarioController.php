@@ -64,6 +64,7 @@ class IngresoInventarioController extends Controller
             IngresoInventario::create([
                 'producto_id' => $producto->id,
                 'cantidad_ingresada' => $request->cantidad_ingresada,
+                'cantidad_disponible' => $request->cantidad_ingresada,
                 'valor_unitario' => $request->valor_unitario,
                 'proveedor' => $request->proveedor,
                 'fecha_ingreso' => now(),

@@ -17,6 +17,12 @@ class ProductoController extends Controller
         return view('inventario.productos', compact('productos'));
     }
 
+    //metodo show
+    public function show($id)
+    {
+        return response()->json(['message' => 'Método no implementado'], 501);
+    }
+
     // Actualizar producto
     public function update(Request $request, $id)
     {

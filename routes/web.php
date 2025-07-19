@@ -6,6 +6,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\CorreosController;
 use App\Http\Controllers\IngresoInventarioController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\VentaController;
 
 // Ruta de login (solo para invitados)
 Route::middleware(['guest', 'throttle:10,1'])->group(function () {
@@ -43,6 +44,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('productos', ProductoController::class);
     // busqueda de producto por codigo
     Route::get('/producto/buscar/{codigo}', [ProductoController::class, 'buscar'])->name('producto.buscar');
+
+
+
+    //ventas
+    Route::get('/ventas/registrar', [VentaController::class, 'create'])->name('ventas.create');
+    //guardar venta
+    Route::post('/ventas', [VentaController::class, 'store'])->name('ventas.store');
+    // buscar produto
+    Route::get('/productosx/buscar', [VentaController::class, 'buscarv'])->name('productosv.buscar');
+    
 
 
 });
