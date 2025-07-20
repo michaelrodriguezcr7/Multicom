@@ -11,12 +11,7 @@ class IngresoInventarioController extends Controller
 {
     public function index()
     {
-        $ingresos = IngresoInventario::with('producto')
-            ->orderBy('created_at', 'desc')
-            ->take(50)
-            ->get();
-
-        return view('inventario.ingreso', compact('ingresos'));
+      
     }
 
     public function store(Request $request)

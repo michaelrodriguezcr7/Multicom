@@ -9,7 +9,7 @@
         <!-- Columna izquierda -->
         <div class="col-md-8">
 
-        {{-- Mensajes de error o éxito --}}
+            {{-- Mensajes de error o éxito --}}
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
@@ -32,23 +32,21 @@
                 <!-- Tabla carrito -->
                 <h4>Carrito de Compras</h4>
                 <div class="table-responsive">
-                     <table class="table table-bordered" id="tablaCarrito">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio Unitario</th>
-                            <th>Subtotal</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Dinámico con JS -->
-                    </tbody>
+                    <table class="table table-bordered" id="tablaCarrito">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Subtotal</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dinámico con JS -->
+                        </tbody>
                     </table>
-
                 </div>
-               
 
                 <!-- Nombre del vendedor -->
                 <div class="mb-3">
@@ -68,9 +66,8 @@
                 <!-- Total oculto -->
                 <input type="hidden" name="total" id="totalVenta">
 
-                <!-- usuario oculto -->
+                <!-- Usuario oculto -->
                 <input type="hidden" name="id_usu" value="{{ Auth::user()->id_usu }}">
-
 
                 <!-- Botón procesar -->
                 <button type="submit" class="btn btn-primary">Procesar Venta</button>
@@ -88,9 +85,17 @@
 
                 <h4 class="mt-4">Cambio: <span class="text-success" id="cambioTexto">0.00</span></h4>
             </div>
+
+            <!-- Botón para abrir el modal de ventas -->
+            <button class="btn btn-primary mt-4 w-100" data-bs-toggle="modal" data-bs-target="#modalVentas">
+                Ver Ventas
+            </button>
         </div>
     </div>
 </div>
+
+
+@include('ventas.modales.eliminar')
 
 @endsection
 

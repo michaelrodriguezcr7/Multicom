@@ -14,15 +14,14 @@ class VentaController extends Controller
 
     public function index()
     {
+        $productos = Producto::all();
         $ventas = Venta::with('usuario')->get();
-        return view('ventas.eliminar', compact('ventas'));
+        return view('ventas.ventas', compact('productos', 'ventas'));
     }
-
 
     public function create()
     {
-        $productos = Producto::all();
-        return view('ventas.ventas', compact('productos'));
+        
     }
 
     public function store(Request $request)
@@ -159,7 +158,7 @@ class VentaController extends Controller
 
             DB::commit();
 
-            return redirect()->route('ventas.eliminar')->with('mensaje', 'venta eliminada correctamente');
+            return redirect()->route('ventas.create')->with('mensaje', 'venta eliminada correctamente');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error al eliminar la venta: ' . $e->getMessage());

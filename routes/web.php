@@ -35,8 +35,9 @@ Route::middleware('auth')->group(function () {
     // Cerrar sesión
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+
+
     // ingreso de productos, vista inventario
-    Route::get('/ingreso-inventario', [IngresoInventarioController::class, 'index'])->name('ingreso.formulario');
     Route::post('/ingreso-inventario', [IngresoInventarioController::class, 'store'])->name('ingreso.guardar');
 
     
@@ -47,21 +48,12 @@ Route::middleware('auth')->group(function () {
 
 
 
-    //ventas
-    Route::get('/ventas/registrar', [VentaController::class, 'create'])->name('ventas.create');
+    //ventas vista
+    Route::get('/ventas/registrar', [VentaController::class, 'index'])->name('ventas.create');
     //guardar venta
     Route::post('/ventas', [VentaController::class, 'store'])->name('ventas.store');
     // buscar produto
     Route::get('/productosx/buscar', [VentaController::class, 'buscarv'])->name('productosv.buscar');
-
-
-
-
-    //pendientes
-
-    //vista de eliminar
-    Route::get('/ventas/eliminar', [VentaController::class, 'index'])->name('ventas.eliminar');
-
     //metodo de eliminar
     Route::delete('/ventas/{venta}', [VentaController::class, 'destroy'])->name('ventas.destroy');
 
