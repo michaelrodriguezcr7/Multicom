@@ -3,15 +3,16 @@
 
 @section('content')
 
-<h3 class="mb-4 text-center">📦 Inventario General (Stock Actual por Producto)</h3>
+<h2 class="text-center mb-4">📦 Inventario General (Stock Actual por Producto)</h2>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>📦 Ingresos de Inventario</h3>
-    <button id="btnAbrirModalIngreso" class="btn btn-success">
+    <h4 class="mb-0">📦 Ingresos de Inventario</h4>
+    <button id="btnAbrirModalIngreso" class="btn btn-primary shadow-sm">
         ➕ Nuevo Ingreso
     </button>
 </div>
 
+{{-- Mensajes flash --}}
 @if (session('error'))
     <div class="alert alert-danger">{{ session('error') }}</div>
 @endif
@@ -20,10 +21,10 @@
 @endif
 
 <div class="container-fluid">
-    <div class="card shadow-sm">
+    <div class="card shadow-sm border">
         <div class="card-body table-responsive">
-            <table class="table table-striped align-middle">
-                <thead class="table-dark">
+            <table class="table table-bordered align-middle">
+                <thead class="bg-primary text-white text-center">
                     <tr>
                         <th>Código</th>
                         <th>Nombre</th>
@@ -42,14 +43,14 @@
                             <td>{{ $prod->codigo }}</td>
                             <td>{{ $prod->nombre }}</td>
                             <td>{{ $prod->categoria }}</td>
-                            <td>{{ $prod->cantidad_total }}</td>
+                            <td class="text-center">{{ $prod->cantidad_total }}</td>
                             <td>${{ number_format($prod->valor_unitario, 0, ',', '.') }}</td>
                             <td>{{ $prod->proveedor_actual }}</td>
                             <td>{{ $prod->porcentaje_ganancia }}%</td>
                             <td>${{ number_format($prod->valor_venta, 0, ',', '.') }}</td>
                             <td>
-                                <div class="d-flex gap-1">
-                                    <button class="btn btn-warning btn-sm btn-editar"
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <button class="btn btn-sm btn-outline-primary btn-editar"
                                         data-id="{{ $prod->id }}"
                                         data-codigo="{{ $prod->codigo }}"
                                         data-nombre="{{ $prod->nombre }}"
@@ -65,7 +66,7 @@
                                           onsubmit="return confirm('⚠️ Este producto se eliminará junto con todos sus registros de inventario.\n¿Deseas continuar?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">🗑 Eliminar</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑 Eliminar</button>
                                     </form>
                                 </div>
                             </td>
@@ -80,6 +81,7 @@
         </div>
     </div>
 </div>
+
 
 @include('inventario.modales.crear')
 @include('inventario.modales.modificar') {{-- Modal de edición --}}
