@@ -35,6 +35,7 @@ class ProductoController extends Controller
             'porcentaje_ganancia' => 'required|numeric|min:0|max:100',
         ]);
 
+        // 🔁 Actualizar en la tabla productos
         $producto = Producto::findOrFail($id);
         $producto->codigo = $request->codigo;
         $producto->nombre = $request->nombre;
@@ -50,9 +51,15 @@ class ProductoController extends Controller
                             ->first();
 
         if ($ultimoIngreso) {
-        $ultimoIngreso->valor_unitario = $producto->valor_unitario;
-        $ultimoIngreso->proveedor = $producto->proveedor_actual;
-        $ultimoIngreso->save();
+            $ultimoIngreso->valor_unitario = $producto->valor_unitario;
+            $ultimoIngreso->proveedor = $producto->proveedor_actual;
+            $ultimoIngreso->porcentaje_ganancia = $producto->porcentaje_ganancia;
+
+            // Calcular valor de venta
+            $valorVenta = $producto->valor_unitario + ($producto->valor_unitario * $producto->porcentaje_ganancia / 100);
+            $ultimoIngreso->valor_venta = $valorVenta;
+
+            $ultimoIngreso->save();
         }
 
         return redirect()->route('productos.index')->with('mensaje', '✅ Producto actualizado correctamente.');

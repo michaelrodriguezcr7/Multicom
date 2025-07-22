@@ -27,6 +27,15 @@ class VentaController extends Controller
     public function store(Request $request)
     {
         try {
+
+                // Validar si hay productos en el carrito
+            $detalle = json_decode($request->detalleVenta, true);
+
+            if (empty($detalle)) {
+                return redirect()->route('ventas.create')
+                    ->with('mensaje', '⚠️ No hay ningún producto seleccionado para procesar la venta.');
+            }
+            
             DB::beginTransaction();
 
             // 1. Crear la venta
@@ -113,7 +122,24 @@ class VentaController extends Controller
         $productos = Producto::where('codigo', 'LIKE', "%{$query}%")
             ->orWhere('nombre', 'LIKE', "%{$query}%")
             ->limit(10)
-            ->get();
+            ->get()
+            ->map(function ($producto) {
+                // Buscar el primer ingreso con stock disponible (FIFO)
+                $primerLote = $producto->ingresos()
+                    ->where('cantidad_disponible', '>', 0)
+                    ->orderBy('fecha_ingreso', 'asc')
+                    ->first();
+
+                // ✅ Reemplazamos valor_unitario por valor_venta
+                $valorVenta = $primerLote ? $primerLote->valor_venta : 0;
+
+                return [
+                    'id' => $producto->id,
+                    'codigo' => $producto->codigo,
+                    'nombre' => $producto->nombre,
+                    'valor_venta' => $valorVenta, // ahora es el precio de venta real del lote
+                ];
+            });
 
         if ($productos->isEmpty()) {
             return response()->json(['message' => 'Producto no encontrado'], 404);

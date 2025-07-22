@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     
     //metodo resource remplaza todas las rutas
     Route::resource('productos', ProductoController::class);
-    // busqueda de producto por codigo
+    // busqueda de producto por codigo al ingreso
     Route::get('/producto/buscar/{codigo}', [ProductoController::class, 'buscar'])->name('producto.buscar');
 
 

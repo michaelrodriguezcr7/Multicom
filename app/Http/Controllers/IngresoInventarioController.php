@@ -65,6 +65,8 @@ class IngresoInventarioController extends Controller
                 'cantidad_ingresada' => $request->cantidad_ingresada,
                 'cantidad_disponible' => $request->cantidad_ingresada,
                 'valor_unitario' => $request->valor_unitario,
+                'porcentaje_ganancia' => $request->porcentaje_ganancia,
+                'valor_venta' => $request->valor_unitario + ($request->valor_unitario * $request->porcentaje_ganancia / 100),
                 'proveedor' => $request->proveedor,
                 'fecha_ingreso' => now(),
                 'observaciones' => $request->observaciones,

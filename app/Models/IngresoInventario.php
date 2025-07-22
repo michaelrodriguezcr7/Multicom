@@ -14,6 +14,8 @@ class IngresoInventario extends Model
         'cantidad_ingresada',
         'cantidad_disponible',
         'valor_unitario',
+        'porcentaje_ganancia',
+        'valor_venta',
         'proveedor',
         'fecha_ingreso',
         'observaciones',
