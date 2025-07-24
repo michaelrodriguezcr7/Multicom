@@ -37,8 +37,10 @@ Route::middleware('auth')->group(function () {
 
 
 
-    // ingreso de productos, vista inventario
+    // ingreso de productos
     Route::post('/ingreso-inventario', [IngresoInventarioController::class, 'store'])->name('ingreso.guardar');
+    // vista inventario y demas metodos
+    Route::resource('ingresos-inventario', IngresoInventarioController::class);
 
     
     //metodo resource remplaza todas las rutas

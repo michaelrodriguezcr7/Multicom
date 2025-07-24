@@ -11,8 +11,90 @@ class IngresoInventarioController extends Controller
 {
     public function index()
     {
+        $ingresos = IngresoInventario::with('producto')->get();
+        $productos = Producto::all();
+        return view('inventario.ingreso_inventario.inventario', compact('ingresos', 'productos'));
       
     }
+
+    // EDITAR
+     public function edit($id)
+    {
+        $ingreso = IngresoInventario::findOrFail($id);
+        $productos = Producto::all();
+        return view('ingresos.edit', compact('ingreso', 'productos'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'producto_id' => 'required',
+            'cantidad_ingresada' => 'required|numeric',
+            'cantidad_disponible' => 'required|numeric',
+            'valor_unitario' => 'required|numeric',
+            'porcentaje_ganancia' => 'required|numeric',
+            'valor_venta' => 'required|numeric',
+            'proveedor' => 'nullable|string|max:255',
+            'fecha_ingreso' => 'required|date',
+            'observaciones' => 'nullable|string',
+            'lote' => 'nullable|string|max:255',
+        ]);
+
+        $ingreso = IngresoInventario::findOrFail($id);
+
+        $cantidadAnterior = $ingreso->cantidad_ingresada;
+        $cantidadNueva = $request->cantidad_ingresada;
+        $diferencia = $cantidadNueva - $cantidadAnterior;
+
+        // Actualizar campos, incluyendo cantidad_disponible ajustada
+        $ingreso->update([
+            'producto_id' => $request->producto_id,
+            'cantidad_ingresada' => $cantidadNueva,
+            'cantidad_disponible' => $ingreso->cantidad_disponible + $diferencia,
+            'valor_unitario' => $request->valor_unitario,
+            'porcentaje_ganancia' => $request->porcentaje_ganancia,
+            'valor_venta' => $request->valor_venta,
+            'proveedor' => $request->proveedor,
+            'fecha_ingreso' => $request->fecha_ingreso,
+            'observaciones' => $request->observaciones,
+            'lote' => $request->lote,
+        ]);
+
+        // Actualizar la cantidad_total en productos
+        $producto = Producto::find($request->producto_id);
+        $producto->cantidad_total += $diferencia;
+        $producto->save();
+
+        return redirect()->route('ingresos-inventario.index')->with('success', 'Ingreso actualizado correctamente.');
+    }
+
+
+
+   public function destroy($id)
+    {
+        $ingreso = IngresoInventario::findOrFail($id);
+
+        // Obtener el producto relacionado
+        $producto = $ingreso->producto;
+
+        if ($producto) {
+            // Restar la cantidad disponible al total de productos
+            $producto->cantidad_total -= $ingreso->cantidad_disponible;
+
+            // Asegurarse de que no quede negativa
+            if ($producto->cantidad_total < 0) {
+                $producto->cantidad_total = 0;
+            }
+
+            $producto->save();
+        }
+
+        // Ahora sí eliminar el ingreso
+        $ingreso->delete();
+
+        return redirect()->route('ingresos-inventario.index')->with('success', 'Ingreso eliminado correctamente.');
+    }
+
 
     public function store(Request $request)
     {

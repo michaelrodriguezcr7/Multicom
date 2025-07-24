@@ -7,9 +7,14 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">📦 Ingresos de Inventario</h4>
-    <button id="btnAbrirModalIngreso" class="btn btn-primary shadow-sm">
-        ➕ Nuevo Ingreso
-    </button>
+    <div class="d-flex gap-2">
+        <a href="{{ route('ingresos-inventario.index') }}" class="btn btn-success shadow-sm">
+            📄 Ver Ingresos
+        </a>
+        <button id="btnAbrirModalIngreso" class="btn btn-primary shadow-sm">
+            ➕ Nuevo Ingreso
+        </button>
+    </div>
 </div>
 
 {{-- Mensajes flash --}}
