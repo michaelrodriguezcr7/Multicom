@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\IngresoInventario;
+use App\Models\DetalleVenta;
 use Illuminate\Support\Facades\DB;
 
 class IngresoInventarioController extends Controller
@@ -74,6 +75,16 @@ class IngresoInventarioController extends Controller
     {
         $ingreso = IngresoInventario::findOrFail($id);
 
+        // Verificar si hay ventas relacionadas con este ingreso (por producto y lote)
+        $ventaRelacionada = DetalleVenta::where('producto_id', $ingreso->producto_id)
+            ->where('lote', $ingreso->lote)
+            ->exists();
+
+        if ($ventaRelacionada) {
+            return redirect()->route('ingresos-inventario.index')
+                ->with('error', '❌ No se puede eliminar este ingreso porque ya hay ventas registradas de este lote.');
+        }
+
         // Obtener el producto relacionado
         $producto = $ingreso->producto;
 
@@ -89,10 +100,11 @@ class IngresoInventarioController extends Controller
             $producto->save();
         }
 
-        // Ahora sí eliminar el ingreso
+        // Eliminar el ingreso
         $ingreso->delete();
 
-        return redirect()->route('ingresos-inventario.index')->with('success', 'Ingreso eliminado correctamente.');
+        return redirect()->route('ingresos-inventario.index')
+            ->with('mensaje', '✅ Ingreso eliminado correctamente.');
     }
 
 

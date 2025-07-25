@@ -12,10 +12,13 @@
 
     <h2 class="text-center mb-4">📦 Módulo de Ingresos de Inventario</h2>
 
-    {{-- Mensajes de éxito --}}
-    @if(session('success'))
-        <div class="alert alert-success text-center">{{ session('success') }}</div>
-    @endif
+    {{-- Mensajes de error o éxito --}}
+            @if (session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+            @if (session('mensaje'))
+                <div class="alert alert-info">{{ session('mensaje') }}</div>
+            @endif
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped align-middle text-center">

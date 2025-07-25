@@ -29,7 +29,7 @@
     <div class="card shadow-sm border">
         <div class="card-body table-responsive">
             <table class="table table-bordered align-middle">
-                <thead class="bg-primary text-white text-center">
+                <thead class="table-primary">
                     <tr>
                         <th>Código</th>
                         <th>Nombre</th>

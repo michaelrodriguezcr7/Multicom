@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\IngresoInventario;
+use App\Models\DetalleVenta;
 
 class ProductoController extends Controller
 {
@@ -65,10 +66,19 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')->with('mensaje', '✅ Producto actualizado correctamente.');
     }
 
+
     // Eliminar producto y sus ingresos
     public function destroy($id)
     {
         $producto = Producto::with('ingresos')->findOrFail($id);
+
+        // Verificar si el producto tiene ventas registradas
+        $ventasRelacionadas = DetalleVenta::where('producto_id', $producto->id)->exists();
+
+        if ($ventasRelacionadas) {
+            return redirect()->route('productos.index')
+                ->with('error', '❌ No se puede eliminar el producto "' . $producto->nombre . '" porque ya tiene ventas registradas.');
+        }
 
         $mensaje = '✅ Producto "' . $producto->nombre . '" eliminado.';
 
@@ -76,10 +86,13 @@ class ProductoController extends Controller
             $mensaje .= ' También se eliminaron ' . $producto->ingresos->count() . ' registros de inventario.';
         }
 
-        $producto->delete(); // eliminaciones en cascada si está definido en la relación de la migración
+        $producto->delete(); // eliminación en cascada si está definida
 
         return redirect()->route('productos.index')->with('mensaje', $mensaje);
     }
+
+
+
     /**
      * Busca un producto por su código y devuelve sus datos en JSON.
      */
