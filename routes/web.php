@@ -19,9 +19,7 @@ Route::middleware(['guest', 'throttle:10,1'])->group(function () {
 Route::middleware('auth')->group(function () {
 
     // Página principal luego del login
-    Route::get('/index', function () {
-        return view('home.index');
-    })->name('home');
+     Route::get('/index', [LoginController::class, 'index'])->name('home');
 
     // CRUD de usuarios
     Route::resource('usuarios', UsuarioController::class);

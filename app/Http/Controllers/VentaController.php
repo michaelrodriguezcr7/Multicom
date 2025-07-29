@@ -16,7 +16,12 @@ class VentaController extends Controller
     {
         $productos = Producto::all();
         $ventas = Venta::with('usuario')->get();
-        return view('ventas.ventas', compact('productos', 'ventas'));
+
+        return response()
+            ->view('ventas.ventas', compact('productos', 'ventas'))
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function create()

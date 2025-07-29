@@ -14,8 +14,12 @@ class IngresoInventarioController extends Controller
     {
         $ingresos = IngresoInventario::with('producto')->get();
         $productos = Producto::all();
-        return view('inventario.ingreso_inventario.inventario', compact('ingresos', 'productos'));
-      
+
+        return response()
+            ->view('inventario.ingreso_inventario.inventario', compact('ingresos', 'productos'))
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     // EDITAR

@@ -8,10 +8,15 @@ use App\Models\Usuario;
 class UsuarioController extends Controller
 {
     // 1. Mostrar todos los usuarios
-    public function index()
+   public function index()
     {
         $usuarios = Usuario::all();
-        return view('usuarios.index', compact('usuarios'));
+
+        return response()
+            ->view('usuarios.index', compact('usuarios'))
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     // 2. Mostrar formulario para crear (NO LO USAS porque usas modal)

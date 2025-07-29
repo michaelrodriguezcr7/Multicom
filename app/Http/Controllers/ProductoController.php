@@ -12,10 +12,15 @@ class ProductoController extends Controller
     /**
      * Muestra la vista principal con todos los productos del inventario.
      */
-    public function index()
+  public function index()
     {
         $productos = Producto::orderBy('nombre')->get();
-        return view('inventario.productos', compact('productos'));
+
+        return response()
+            ->view('inventario.productos', compact('productos'))
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     //metodo show
