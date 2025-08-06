@@ -33,7 +33,9 @@ class LoginController extends Controller
         }
 
         // Evita que el navegador almacene esta vista
-        return response()->view('auth.login')->header('Cache-Control','no-cache, no-store, must-revalidate');
+        return response()->view('auth.login')->header('Cache-Control','no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     // Verifica las credenciales

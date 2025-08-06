@@ -17,7 +17,7 @@
     <div class="center-content">
         <div class="row text-center">
             <div class="col-6 col-md-4 col-lg-3 mb-4">
-                <a href="#" class="btn btn-success btn-lg w-100">
+                <a href="{{ route('reportes.estadisticas') }}" class="btn btn-success btn-lg w-100">
                     <i class="bi bi-file-earmark-bar-graph"></i> Reportes
                 </a>
             </div>

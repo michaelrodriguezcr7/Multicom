@@ -7,6 +7,7 @@ use App\Http\Controllers\CorreosController;
 use App\Http\Controllers\IngresoInventarioController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VentaController;
+use App\Http\Controllers\ReporteController;
 
 // Ruta de login (solo para invitados)
 Route::middleware(['guest', 'throttle:10,1'])->group(function () {
@@ -57,5 +58,11 @@ Route::middleware('auth')->group(function () {
     //metodo de eliminar
     Route::delete('/ventas/{venta}', [VentaController::class, 'destroy'])->name('ventas.destroy');
 
+
+    // REPORTES
+    Route::get('/reportes/ventas-diarias', [ReporteController::class, 'estadisticasGenerales'])->name('reportes.estadisticas');
+    // PDF
+    Route::get('/reportes/ventas/pdf', [ReporteController::class, 'generarPDF'])->name('reportes.ventas.pdf');
+    
 
 });
